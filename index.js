@@ -10,11 +10,17 @@ app.use(cors());
 
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 const recipeRouter = require("./routes/recipe-router");
+require("./routes/auth-routes")(app);
+require("./routes/user-routes")(app);
+// const authRouter = require("./routes/auth-routes");
+// const userRouter = require("./routes/user-routes");
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
 app.use("/api", recipeRouter);
+// app.use("/api", authRouter);
+// app.use("/api", userRouter);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
