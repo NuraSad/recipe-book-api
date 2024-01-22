@@ -52,8 +52,10 @@ updateRecipe = async (req, res) => {
     }
     recipe.name = body.name;
     recipe.meal = body.meal;
+    recipe.image = body.image;
     recipe.ingredients = body.ingredients;
     recipe.instructions = body.instructions;
+    recipe.author = body.author;
 
     recipe
       .save()

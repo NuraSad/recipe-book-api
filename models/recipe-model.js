@@ -5,6 +5,7 @@ const recipe = new Schema(
   {
     name: String,
     meal: String,
+    author: String,
     image: String,
     ingredients: [String],
     instructions: [String],
