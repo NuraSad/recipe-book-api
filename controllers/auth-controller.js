@@ -1,6 +1,7 @@
 const config = require("../config/auth-config");
 
 const User = require("../models/user-model");
+const UserProfile = require("../models/user-profile-model");
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -11,6 +12,14 @@ exports.signup = (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
   });
+
+  const profile = new UserProfile({
+    username: req.body.username,
+    created: [],
+    favourite: [],
+  });
+
+  profile.save();
 
   user
     .save()

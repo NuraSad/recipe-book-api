@@ -1,6 +1,7 @@
 const Recipe = require("../models/recipe-model");
+const UserProfile = require("../models/user-profile-model");
 
-createRecipe = (req, res) => {
+createRecipe = async (req, res) => {
   const body = req.body;
 
   if (!body) {
@@ -15,6 +16,18 @@ createRecipe = (req, res) => {
   if (!recipe) {
     return res.status(400).json({ success: false, error: err });
   }
+
+  await UserProfile.findOne({ username: body.author }).then((profile, err) => {
+    if (err) {
+      return res.status(400).json({
+        success: false,
+        error: err,
+      });
+    }
+
+    profile.created.push(recipe._id);
+    profile.save();
+  });
 
   recipe
     .save()
