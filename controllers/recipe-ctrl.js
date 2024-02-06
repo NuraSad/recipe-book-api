@@ -101,6 +101,20 @@ deleteRecipe = async (req, res) => {
           .json({ success: false, error: `Recipe not found` });
       }
 
+      UserProfile.findOne({ username: recipe.author }).then((profile, err) => {
+        if (err) {
+          return res.status(400).json({
+            success: false,
+            error: err,
+          });
+        }
+        const recipes = profile.created;
+        const idx = recipes.indexOf(recipe._id);
+        recipes.splice(idx, 1);
+        profile.created = recipes;
+        profile.save();
+      });
+
       return res.status(200).json({ success: true, data: recipe });
     })
     .catch((err) => console.log(err));
