@@ -7,22 +7,11 @@ exports.UserProfile = async (req, res) => {
   }).exec();
   const recipesID = profile.created;
   const favouriteID = profile.favourite;
-  const createdRecipeNames = [];
-  const favouriteRecipesNames = [];
-  if (recipesID.length > 0) {
-    // find all recipes matching the _id of recipes stored in user profile. The $in operator selects the documents where the value of a field equals any value in the specified array.
-    const recipes = await Recipe.find({ _id: { $in: recipesID } });
-    recipes.forEach((recipe) => createdRecipeNames.push(recipe.name));
-  }
-  if (favouriteID.length > 0) {
-    const favouriteRecipes = await Recipe.find({ _id: { $in: favouriteID } });
-    favouriteRecipes.forEach((recipe) =>
-      favouriteRecipesNames.push(recipe.name)
-    );
-  }
+  const recipes = await Recipe.find({ _id: { $in: recipesID } });
+  const favouriteRecipes = await Recipe.find({ _id: { $in: favouriteID } });
 
   return res.status(200).json({
     success: true,
-    data: { created: createdRecipeNames, favourite: favouriteRecipesNames },
+    data: { created: recipes, favourite: favouriteRecipes },
   });
 };
