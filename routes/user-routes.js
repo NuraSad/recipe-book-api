@@ -10,7 +10,7 @@ module.exports = function (app) {
     next();
   });
 
-  app.get("/api/test/all", controller.allAccess);
+  app.get("/api/profile/:username", controller.UserProfile);
 
-  app.get("/api/test/user", [verifyToken], controller.userBoard);
+  // app.get("/api/test/user", [verifyToken], controller.userBoard);
 };
