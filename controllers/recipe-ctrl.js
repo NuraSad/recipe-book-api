@@ -137,6 +137,21 @@ getRecipeById = async (req, res) => {
     .catch((err) => console.log(err));
 };
 
+checkLikedRecipe = async (req, res) => {
+  const profile = await UserProfile.findOne({
+    username: req.params.username,
+  }).exec();
+  if (
+    profile &&
+    profile.favourite.length &&
+    profile.favourite.includes(req.params.id)
+  ) {
+    return res.send(true);
+  } else {
+    return res.send(false);
+  }
+};
+
 getRecipes = async (req, res) => {
   await Recipe.find()
     .then((recipes, err) => {
@@ -159,4 +174,5 @@ module.exports = {
   deleteRecipe,
   getRecipes,
   getRecipeById,
+  checkLikedRecipe,
 };
