@@ -152,6 +152,26 @@ checkLikedRecipe = async (req, res) => {
   }
 };
 
+addFavouriteRecipe = async (req, res) => {
+  const profile = await UserProfile.findOne({
+    username: req.params.username,
+  }).exec();
+  if (profile) {
+    profile.favourite.push(req.params.id);
+    profile.save().then(() => {
+      return res.status(200).json({
+        success: true,
+        message: "Recipe successfully added!",
+      });
+    });
+  } else {
+    return res.status(404).json({
+      success: false,
+      message: "Failed to add recipe!",
+    });
+  }
+};
+
 getRecipes = async (req, res) => {
   await Recipe.find()
     .then((recipes, err) => {
@@ -175,4 +195,5 @@ module.exports = {
   getRecipes,
   getRecipeById,
   checkLikedRecipe,
+  addFavouriteRecipe,
 };
