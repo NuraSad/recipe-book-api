@@ -141,33 +141,42 @@ checkLikedRecipe = async (req, res) => {
   const profile = await UserProfile.findOne({
     username: req.params.username,
   }).exec();
-  if (
-    profile &&
-    profile.favourite.length &&
-    profile.favourite.includes(req.params.id)
-  ) {
+  if (profile && profile.favourite.includes(req.params.id)) {
     return res.send(true);
   } else {
     return res.send(false);
   }
 };
 
-addFavouriteRecipe = async (req, res) => {
+addOrRemoveFavouriteRecipe = async (req, res) => {
   const profile = await UserProfile.findOne({
     username: req.params.username,
   }).exec();
   if (profile) {
-    profile.favourite.push(req.params.id);
-    profile.save().then(() => {
-      return res.status(200).json({
-        success: true,
-        message: "Recipe successfully added!",
+    if (!profile.favourite.includes(req.params.id)) {
+      profile.favourite.push(req.params.id);
+      profile.save().then(() => {
+        return res.status(200).json({
+          success: true,
+          message: "Recipe successfully added!",
+        });
       });
-    });
+    } else {
+      const recipes = profile.favourite;
+      const idx = recipes.indexOf(req.params.id);
+      recipes.splice(idx, 1);
+      profile.favourite = recipes;
+      profile.save().then(() => {
+        return res.status(200).json({
+          success: true,
+          message: "Recipe successfully removed!",
+        });
+      });
+    }
   } else {
     return res.status(404).json({
       success: false,
-      message: "Failed to add recipe!",
+      message: "Failed the operation!",
     });
   }
 };
@@ -195,5 +204,5 @@ module.exports = {
   getRecipes,
   getRecipeById,
   checkLikedRecipe,
-  addFavouriteRecipe,
+  addOrRemoveFavouriteRecipe,
 };
