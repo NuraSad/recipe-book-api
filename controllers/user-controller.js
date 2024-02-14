@@ -8,10 +8,17 @@ exports.UserProfile = async (req, res) => {
   const recipesID = profile.created;
   const favouriteID = profile.favourite;
   const recipes = await Recipe.find({ _id: { $in: recipesID } });
-  const favouriteRecipes = await Recipe.find({ _id: { $in: favouriteID } });
-
-  return res.status(200).json({
-    success: true,
-    data: { created: recipes, favourite: favouriteRecipes },
+  const favouriteRecipes = await Recipe.find({
+    _id: { $in: favouriteID },
+  });
+  const favouriteRecipesID = favouriteRecipes.map((recipe) =>
+    recipe._id.toString()
+  );
+  profile.favourite = favouriteRecipesID;
+  profile.save().then(() => {
+    return res.status(200).json({
+      success: true,
+      data: { created: recipes, favourite: favouriteRecipes },
+    });
   });
 };
